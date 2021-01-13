@@ -1,0 +1,137 @@
+﻿Build1=Default,b4a.example
+File1=Layout.bal
+FileGroup1=Default Group
+Group=Default Group
+Library1=core
+Library2=xui
+Library3=okhttputils2
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~
+Module1=Starter
+NumberOfFiles=1
+NumberOfLibraries=3
+NumberOfModules=1
+Version=10.5
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: B4A Example
+	#VersionCode: 1
+	#VersionName: 
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: unspecified
+	#CanInstallToExternalStorage: False
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: True
+#End Region
+
+Sub Process_Globals
+	'These global variables will be declared once when the application starts.
+	'These variables can be accessed from all modules.
+	Private xui As XUI
+End Sub
+
+Sub Globals
+	Dim deletedata As HttpJob
+	Dim updatedata As HttpJob
+    Dim readdata As HttpJob
+	Dim savedata As HttpJob
+	Private EditText1 As EditText
+	Dim URL As String
+	Dim prevData As String
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	Activity.LoadLayout("Layout")
+	URL=""
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
+Private Sub Save_Click
+	savedata.Initialize("savedata", Me)
+	savedata.PostString(URL,"save=&editTextData="&EditText1.Text)
+
+End Sub
+
+Private Sub Read_Click
+	readdata.Initialize("readdata", Me)
+	readdata.PostString(URL,"fetch=")
+End Sub
+Private Sub Update_Click
+	updatedata.Initialize("updatedata", Me)
+	updatedata.PostString(URL,"update=&editTextData="&EditText1.Text&"&prevdata="&prevData)
+End Sub
+Private Sub Delete_Click
+	deletedata.Initialize("deletedata", Me)
+	deletedata.PostString(URL,"delete=&editTextData="&EditText1.Text)
+End Sub
+Sub JobDone (job As HttpJob)
+Select job
+	
+	'save data
+		Case savedata
+			If job.Success Then
+				'success message
+				ToastMessageShow("Saved succesfully ",False)
+				'Clear text in editText
+				EditText1.Text=""
+			Else
+				   
+				ToastMessageShow("Check your Internet connection",False)
+			End If
+				
+			savedata.Release
+	'fetch data
+		Case readdata
+			If job.Success Then
+				
+				
+				' check if their is data from response
+				If job.GetString.Length < 1 Then
+					'No data message
+					ToastMessageShow("No Data available",False)
+					Return
+				End If
+				'success message
+				ToastMessageShow("Fetched succesfully ",False)
+			    'set editText value to the one fetched from database
+				EditText1.Text=job.GetString
+				prevData= EditText1.Text
+			Else
+				   
+				ToastMessageShow("Check your Internet connection",False)
+			End If
+				
+			readdata.Release
+			
+			'update data
+		Case updatedata
+			If job.Success Then
+				'success message
+				ToastMessageShow("Updated succesfully ",False)
+			Else
+				   
+				ToastMessageShow("Check your Internet connection",False)
+			End If
+				
+			updatedata.Release
+			'delete data
+		Case deletedata
+			If job.Success Then
+				'success message
+				ToastMessageShow("Deleted succesfully ",False)
+			Else
+				   
+				ToastMessageShow("Check your Internet connection",False)
+			End If
+				
+			deletedata.Release
+	    End Select
+End Sub
