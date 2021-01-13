@@ -5,7 +5,7 @@
 
 $servername = "localhost";      // Computer host
 $username = "root";             // MySql username
-$password = "manu";                  // MySQL password
+$password = "";                  // MySQL password
 $dbname = "b4a-php-db";          // Database name
 
 // Create connection
