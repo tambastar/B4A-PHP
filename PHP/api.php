@@ -22,7 +22,7 @@ if ($conn->connect_error) {
 if(isset($_POST['save'])) {
 
 //sql statement to insert data
-$sql = "INSERT INTO student_name (name) VALUES ('".$_POST['editTextData']."', )";
+$sql = "INSERT INTO student_name (name) VALUES ('".$_POST['editTextData']."' )";
 
 // execute to insert data
 if ($conn->query($sql) === TRUE) {
@@ -67,7 +67,7 @@ if ($result->num_rows > 0) {
 if(isset($_POST['update'])) {
 
 //sql statement to select data
-$sql = "UPDATE student_name SET name='".$_POST['editTextData']."' WHERE name='".$_POST['prevData']."'";
+$sql = "UPDATE student_name SET name='".$_POST['editTextData']."' WHERE name='".$_POST['prevdata']."'";
 
 //execute update statement
 if ($conn->query($sql) === TRUE) {
